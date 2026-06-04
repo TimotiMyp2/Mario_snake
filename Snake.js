@@ -2,29 +2,50 @@
 // MARIO SNAKE - Snake.js
 // =============================================
 
-// --- CONSTANTS ---
-const BOARD_SIZE = 20;        // Grid is always 20x20 cells
-const APPLES_TO_LEVEL_UP = 5; // How many coins to collect before next level
+const BOARD_SIZE = 20;
+const APPLES_TO_LEVEL_UP = 5;
 
-// --- GAME STATE VARIABLES ---
-let Board;                    // 2D array representing the grid ("W", ".", "S", "A")
-let Snake;                    // Array of [x,y] pairs — index 0 is tail, last is head
-let Direction;                // Current direction: "up", "down", "left", "right"
-let Apple;                    // [x, y] position of the current apple (coin)
-let GameLoopTimer;            // Interval that calls Tick() every few milliseconds
-let CurrentLevel = 1;         // Current level number
-let Score = 0;                // Player's total score
-let ApplesEatenThisLevel = 0; // Counts apples eaten to trigger level up
-let TimeLeft = 30;            // Seconds remaining in current level
-let CountdownInterval;        // Interval that ticks down the timer every second
+let Board;
+let Snake;
+let Direction;
+let Apple;
+let GameLoopTimer;
+let CurrentLevel = 1;
+let Score = 0;
+let ApplesEatenThisLevel = 0;
+let TimeLeft = 30;
+let CountdownInterval;
+
+
+// -----------------------------------------------
+// ShowMessage
+// Показывает красивый оверлей с текстом вместо alert().
+// После 1.6 секунды автоматически скрывается и вызывает callback.
+// -----------------------------------------------
+function ShowMessage(text, callback) {
+  let overlay = document.getElementById("level_overlay");
+  let overlayText = document.getElementById("overlay_text");
+
+  overlayText.textContent = text;
+  overlay.style.display = "flex";
+
+  // Перезапускаем анимацию
+  overlayText.style.animation = "none";
+  overlayText.offsetHeight; // принудительный reflow
+  overlayText.style.animation = "popIn 1.6s forwards";
+
+  setTimeout(function() {
+    overlay.style.display = "none";
+    if (callback) callback();
+  }, 1600);
+}
 
 
 // -----------------------------------------------
 // BuildBoard
-// Creates a fresh 20x20 board where the wall border
-// thickness equals the current level number.
-// Level 1 = 1-cell border, Level 2 = 2-cell border, etc.
-// This is how the playable area shrinks each level!
+// Строит доску 20x20 с толщиной стен = номеру уровня.
+// Level 1 = 1 ячейка стен, Level 2 = 2 ячейки, и т.д.
+// Так поле уменьшается с каждым уровнем.
 // -----------------------------------------------
 function BuildBoard(level) {
   let newBoard = [];
@@ -47,8 +68,7 @@ function BuildBoard(level) {
 
 // -----------------------------------------------
 // CreateApple
-// Places a new coin at a random empty spot on the board.
-// Keeps trying until it finds a cell that is "." (empty).
+// Ставит новую звезду (цель) на случайную пустую клетку.
 // -----------------------------------------------
 function CreateApple() {
   let xRandomPos = Math.floor(Math.random() * BOARD_SIZE);
@@ -65,27 +85,32 @@ function CreateApple() {
 
 // -----------------------------------------------
 // DrawBoard
-// Clears the HTML grid and redraws every cell
-// using Mario-themed CSS classes:
-//   "brick"  = wall (W)
-//   "sky"    = empty (.)
-//   "mario"  = snake segment (S)
-//   "coin"   = apple/collectible (A)
+// Перерисовывает всю сетку с Mario-классами.
+// Голова змейки получает класс "mario-head" (с буквой M),
+// тело — "mario", стены — "brick", цель — "coin".
 // -----------------------------------------------
 function DrawBoard() {
   ClearGrid();
 
+  // Записываем все сегменты змейки в массив
   for (let i in Snake) {
     Board[Snake[i][1]][Snake[i][0]] = "S";
   }
 
   Board[Apple[1]][Apple[0]] = "A";
 
+  // Голова — отдельно для особого стиля
+  let headX = Snake[Snake.length - 1][0];
+  let headY = Snake[Snake.length - 1][1];
+
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
       if      (Board[y][x] == "W") AddBlock(x, y, "brick");
       else if (Board[y][x] == ".") AddBlock(x, y, "sky");
-      else if (Board[y][x] == "S") AddBlock(x, y, "mario");
+      else if (Board[y][x] == "S") {
+        if (x == headX && y == headY) AddBlock(x, y, "mario-head");
+        else                          AddBlock(x, y, "mario");
+      }
       else if (Board[y][x] == "A") AddBlock(x, y, "coin");
     }
   }
@@ -94,8 +119,7 @@ function DrawBoard() {
 
 // -----------------------------------------------
 // UpdateUI
-// Refreshes the Level, Score and Timer text
-// shown above the grid in the HTML.
+// Обновляет текст Level / Score / Timer в HTML.
 // -----------------------------------------------
 function UpdateUI() {
   document.getElementById("level_display").textContent = "Level: " + CurrentLevel;
@@ -106,9 +130,8 @@ function UpdateUI() {
 
 // -----------------------------------------------
 // StartCountdown
-// Starts the per-level countdown timer (30 seconds).
-// Every second it decrements TimeLeft and updates the UI.
-// If time reaches 0, the game ends.
+// Запускает обратный отсчёт 30 секунд.
+// При достижении 0 — Game Over с оверлеем.
 // -----------------------------------------------
 function StartCountdown() {
   TimeLeft = 30;
@@ -120,7 +143,7 @@ function StartCountdown() {
 
     if (TimeLeft <= 0) {
       GameOver();
-      alert("Time is up! Game Over! Final Score: " + Score);
+      ShowMessage("Time is up! Score: " + Score, null);
     }
   }, 1000);
 }
@@ -128,10 +151,8 @@ function StartCountdown() {
 
 // -----------------------------------------------
 // NextLevel
-// Called when the player collects enough coins.
-// Increases the level, rebuilds the board with thicker walls,
-// resets the snake to 3 segments in the center,
-// and restarts the timer. Snake moves faster each level!
+// Повышает уровень: толще стены, сброс змейки до 3 сегментов,
+// рестарт таймера, скорость выше. Без alert — просто оверлей!
 // -----------------------------------------------
 function NextLevel() {
   CurrentLevel++;
@@ -142,7 +163,6 @@ function NextLevel() {
 
   Board = BuildBoard(CurrentLevel);
 
-  // Reset snake to 3 segments in the center of the field
   let center = Math.floor(BOARD_SIZE / 2);
   Snake = [
     [center - 2, center],
@@ -155,20 +175,19 @@ function NextLevel() {
   UpdateUI();
   DrawBoard();
 
-  alert("Level " + CurrentLevel + "! The walls are closing in!");
-
-  StartCountdown();
-
-  // Speed increases each level (minimum 80ms)
-  let speed = Math.max(80, 200 - (CurrentLevel - 1) * 20);
-  GameLoopTimer = setInterval(Tick, speed);
+  // Показываем оверлей, затем автоматически продолжаем игру
+  ShowMessage("Level " + CurrentLevel + "!", function() {
+    StartCountdown();
+    let speed = Math.max(80, 200 - (CurrentLevel - 1) * 20);
+    GameLoopTimer = setInterval(Tick, speed);
+  });
 }
 
 
 // -----------------------------------------------
 // StartGame
-// Resets everything and starts a fresh game from Level 1.
-// Called when the player clicks the Start Game button.
+// Сбрасывает всё и начинает игру с Level 1.
+// Вызывается по кнопке Start Game.
 // -----------------------------------------------
 function StartGame() {
   CurrentLevel = 1;
@@ -201,8 +220,7 @@ function StartGame() {
 
 // -----------------------------------------------
 // KeyPressed
-// Reads arrow key input and updates the snake's direction.
-// Prevents the snake from immediately reversing into itself.
+// Управление стрелками. Нельзя развернуться назад.
 // -----------------------------------------------
 function KeyPressed(event) {
   if (event.keyCode == 38 && Direction != "down")  Direction = "up";
@@ -214,11 +232,11 @@ function KeyPressed(event) {
 
 // -----------------------------------------------
 // MoveSnake
-// Core movement logic called every Tick.
-// 1. Calculates where the head moves next
-// 2. Checks for wall or self collision — Game Over
-// 3. Checks for apple collision — grow + score + level check
-// 4. Moves snake forward (adds new head, removes tail)
+// Основная логика движения:
+// 1. Вычисляет следующую позицию головы
+// 2. Проверяет столкновение со стеной или собой
+// 3. Проверяет съедение звезды
+// 4. Двигает змейку (добавляет голову, убирает хвост)
 // -----------------------------------------------
 function MoveSnake() {
   let isGrowing = false;
@@ -234,18 +252,21 @@ function MoveSnake() {
   if (Direction == "up")    yNext--;
   if (Direction == "down")  yNext++;
 
+  // Выход за границы
   if (yNext < 0 || yNext >= BOARD_SIZE || xNext < 0 || xNext >= BOARD_SIZE) {
     GameOver();
-    alert("Game Over! Final Score: " + Score);
+    ShowMessage("Game Over! Score: " + Score, null);
     return null;
   }
 
+  // Столкновение со стеной или собой
   if (Board[yNext][xNext] == "W" || Board[yNext][xNext] == "S") {
     GameOver();
-    alert("Game Over! Final Score: " + Score);
+    ShowMessage("Game Over! Score: " + Score, null);
     return null;
   }
 
+  // Съели звезду
   if (Board[yNext][xNext] == "A") {
     isGrowing = true;
     Score += 10;
@@ -276,7 +297,7 @@ function MoveSnake() {
 
 // -----------------------------------------------
 // GameOver
-// Stops the game loop and the countdown timer.
+// Останавливает все таймеры.
 // -----------------------------------------------
 function GameOver() {
   clearInterval(GameLoopTimer);
@@ -286,8 +307,7 @@ function GameOver() {
 
 // -----------------------------------------------
 // Tick
-// The main game loop — called every 200ms (faster at higher levels).
-// Tells the snake to move one step forward.
+// Главный цикл игры — вызывается каждые N миллисекунд.
 // -----------------------------------------------
 function Tick() {
   MoveSnake();
