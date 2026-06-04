@@ -1,5 +1,6 @@
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Mario Snake</title>
     <link rel="stylesheet" href="Snake.css">
     <script src="HelperLibrary.js"></script>
@@ -7,10 +8,10 @@
   </head>
   <body>
 
-    <!-- Декоративные облака на фоне -->
-    <div class="cloud" style="top:10px; left:5%">☁</div>
-    <div class="cloud" style="top:30px; right:8%">☁</div>
-    <div class="cloud" style="top:80px; left:15%">☁</div>
+    <!-- CSS облака (без спецсимволов) -->
+    <div class="cloud" style="top:15px; left:4%"></div>
+    <div class="cloud" style="top:25px; right:6%"></div>
+    <div class="cloud" style="top:70px; left:18%"></div>
 
     <h1>Mario Snake</h1>
 
@@ -26,10 +27,8 @@
       <button onclick="StartGame()" class="start">Start Game</button>
     </div>
 
-    <!-- Нижняя земля в стиле Марио -->
     <div class="ground-bar"></div>
 
-    <!-- Оверлей для смены уровня и Game Over (без alert!) -->
     <div id="level_overlay">
       <div id="overlay_text">Level 2!</div>
     </div>
