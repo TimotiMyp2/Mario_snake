@@ -7,7 +7,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Облака нарисованы чистым CSS — никаких спецсимволов */
 .cloud {
   position: fixed;
   width: 65px;
@@ -98,7 +97,7 @@ h1 {
   box-sizing: border-box;
 }
 
-/* СТЕНА — Mario кирпич */
+/* СТЕНА — кирпич */
 .brick {
   background-color: #c84b0c;
   border-top: 2px solid #e06020;
@@ -107,21 +106,21 @@ h1 {
   border-right: 2px solid #6B2000;
 }
 
-/* ПУСТАЯ КЛЕТКА — небо */
+/* ПУСТАЯ КЛЕТКА */
 .sky {
   background-color: #5c94fc;
 }
 
-/* ТЕЛО ЗМЕЙКИ — синие штаны Марио */
+/* ТЕЛО ЗМЕЙКИ — красное (как костюм Марио) */
 .mario {
-  background-color: #1a5fb4;
-  border: 2px solid #0a3d7a;
+  background-color: #e52222;
+  border: 2px solid #8B0000;
   border-radius: 3px;
 }
 
-/* ГОЛОВА ЗМЕЙКИ — лицо Марио с красной шляпой (SVG внутри CSS) */
+/* ГОЛОВА — лицо Марио: шляпа + усы + нос */
 .mario-head {
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><ellipse cx='14' cy='18' rx='9' ry='8' fill='%23f5c077'/><rect x='8' y='4' width='14' height='8' rx='2' fill='%23e52222'/><ellipse cx='14' cy='12' rx='11' ry='3.5' fill='%23e52222'/><circle cx='11' cy='17' r='1.5' fill='%23333'/><circle cx='17' cy='17' r='1.5' fill='%23333'/><ellipse cx='14' cy='20' rx='2' ry='1.5' fill='%23e8956d'/><ellipse cx='11' cy='23' rx='3' ry='1.2' fill='%23663300'/><ellipse cx='17' cy='23' rx='3' ry='1.2' fill='%23663300'/></svg>");
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><ellipse cx='14' cy='20' rx='10' ry='8' fill='%23f5c077'/><rect x='6' y='2' width='16' height='10' rx='2' fill='%23e52222'/><rect x='3' y='10' width='22' height='3' rx='1' fill='%23e52222'/><ellipse cx='5' cy='15' rx='3' ry='3' fill='%238B4513'/><ellipse cx='23' cy='15' rx='3' ry='3' fill='%238B4513'/><circle cx='11' cy='17' r='1.5' fill='%23222'/><circle cx='17' cy='17' r='1.5' fill='%23222'/><ellipse cx='14' cy='20' rx='3' ry='2.5' fill='%23e09060'/><ellipse cx='10' cy='24' rx='4.5' ry='2.5' fill='%23663300'/><ellipse cx='18' cy='24' rx='4.5' ry='2.5' fill='%23663300'/></svg>");
   background-size: 27px 27px;
   background-repeat: no-repeat;
   background-position: center;
@@ -129,7 +128,7 @@ h1 {
   border: none;
 }
 
-/* ЦЕЛЬ — гриб из Марио (SVG внутри CSS) */
+/* ЦЕЛЬ — гриб */
 .coin {
   background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'><rect x='9' y='18' width='10' height='8' rx='1' fill='%23f5deb3'/><rect x='13' y='18' width='2' height='8' fill='%23d4b896'/><ellipse cx='14' cy='15' rx='12' ry='10' fill='%23e03020'/><ellipse cx='14' cy='15' rx='10' ry='8' fill='%23e52222'/><circle cx='9' cy='13' r='2.5' fill='white'/><circle cx='17' cy='11' r='2' fill='white'/><circle cx='20' cy='16' r='1.8' fill='white'/><circle cx='11' cy='19' r='1.2' fill='%23333'/><circle cx='17' cy='19' r='1.2' fill='%23333'/></svg>");
   background-size: 26px 26px;
@@ -164,7 +163,6 @@ h1 {
   background-color: #ff4444;
 }
 
-/* ОВЕРЛЕЙ для смены уровней */
 #level_overlay {
   display: none;
   position: fixed;
