@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Mario Snake</title>
+    <link rel="stylesheet" href="Snake.css">
+    <script src="HelperLibrary.js"></script>
+    <script src="Snake.js"></script>
+  </head>
+  <body>
+    <h1>🍄 Mario Snake 🍄</h1>
+
+    <!-- UI panel: shows level, score and timer -->
+    <div id="ui">
+      <span id="level_display">Level: 1</span>
+      <span id="score_display">Score: 0</span>
+      <span id="timer_display">Time: 30</span>
+    </div>
+
+    <div id="grid_id" class="grid"></div>
+
+    <div class="buttonGroup">
+      <button onclick="StartGame()" class="start">▶ Start Game</button>
+    </div>
+  </body>
+</html>
