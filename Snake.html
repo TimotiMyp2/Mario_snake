@@ -6,6 +6,12 @@
     <script src="Snake.js"></script>
   </head>
   <body>
+
+    <!-- Декоративные облака на фоне -->
+    <div class="cloud" style="top:10px; left:5%">☁</div>
+    <div class="cloud" style="top:30px; right:8%">☁</div>
+    <div class="cloud" style="top:80px; left:15%">☁</div>
+
     <h1>Mario Snake</h1>
 
     <div id="ui">
@@ -19,5 +25,14 @@
     <div class="buttonGroup">
       <button onclick="StartGame()" class="start">Start Game</button>
     </div>
+
+    <!-- Нижняя земля в стиле Марио -->
+    <div class="ground-bar"></div>
+
+    <!-- Оверлей для смены уровня и Game Over (без alert!) -->
+    <div id="level_overlay">
+      <div id="overlay_text">Level 2!</div>
+    </div>
+
   </body>
 </html>
